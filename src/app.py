@@ -48,63 +48,104 @@ class RenPyTranslatorApp:
         self._create_status_bar()
 
     def _create_header(self) -> None:
-        frame = ttk.Frame(self.root, padding=10)
-        frame.pack(fill=tk.X)
+        header_frame = ttk.Frame(self.root, padding=10)
+        header_frame.pack(fill=tk.X)
 
-        ttk.Label(
-            frame,
+        title_label = ttk.Label(
+            header_frame,
             text="RenPy Game Translator",
             font=("Arial", 18, "bold"),
-        ).pack(anchor=tk.W)
+        )
+        title_label.pack(anchor=tk.W)
 
-        ttk.Label(
-            frame,
+        subtitle_label = ttk.Label(
+            header_frame,
             text="Extract, translate, edit, validate, and export Ren'Py .rpy script text.",
             font=("Arial", 10),
-        ).pack(anchor=tk.W, pady=(4, 0))
+        )
+        subtitle_label.pack(anchor=tk.W, pady=(4, 0))
 
     def _create_file_controls(self) -> None:
-        frame = ttk.LabelFrame(self.root, text="Project File", padding=10)
-        frame.pack(fill=tk.X, padx=10, pady=5)
+        file_frame = ttk.LabelFrame(self.root, text="Project File", padding=10)
+        file_frame.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(frame, textvariable=self.file_path_var).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        path_label = ttk.Label(file_frame, textvariable=self.file_path_var)
+        path_label.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        ttk.Button(frame, text="Select .rpy File", command=self.select_file).pack(side=tk.LEFT, padx=4)
-        ttk.Button(frame, text="Analyze", command=self.analyze_script).pack(side=tk.LEFT, padx=4)
-        ttk.Button(frame, text="Translate", command=self.translate_script).pack(side=tk.LEFT, padx=4)
-        ttk.Button(frame, text="Quality Check", command=self.run_quality_check).pack(side=tk.LEFT, padx=4)
-        ttk.Button(frame, text="Export Result", command=self.export_result).pack(side=tk.LEFT, padx=4)
+        select_button = ttk.Button(
+            file_frame,
+            text="Select .rpy File",
+            command=self.select_file,
+        )
+        select_button.pack(side=tk.LEFT, padx=4)
+
+        analyze_button = ttk.Button(
+            file_frame,
+            text="Analyze",
+            command=self.analyze_script,
+        )
+        analyze_button.pack(side=tk.LEFT, padx=4)
+
+        translate_button = ttk.Button(
+            file_frame,
+            text="Translate",
+            command=self.translate_script,
+        )
+        translate_button.pack(side=tk.LEFT, padx=4)
+
+        quality_button = ttk.Button(
+            file_frame,
+            text="Quality Check",
+            command=self.run_quality_check,
+        )
+        quality_button.pack(side=tk.LEFT, padx=4)
+
+        export_button = ttk.Button(
+            file_frame,
+            text="Export Result",
+            command=self.export_result,
+        )
+        export_button.pack(side=tk.LEFT, padx=4)
 
     def _create_language_controls(self) -> None:
-        frame = ttk.LabelFrame(self.root, text="Translation Settings", padding=10)
-        frame.pack(fill=tk.X, padx=10, pady=5)
+        language_frame = ttk.LabelFrame(self.root, text="Translation Settings", padding=10)
+        language_frame.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(frame, text="Source Language:").pack(side=tk.LEFT)
+        source_label = ttk.Label(language_frame, text="Source Language:")
+        source_label.pack(side=tk.LEFT)
 
-        ttk.Combobox(
-            frame,
+        source_combo = ttk.Combobox(
+            language_frame,
             textvariable=self.source_language_var,
             values=["Korean", "English", "Japanese"],
             state="readonly",
             width=15,
-        ).pack(side=tk.LEFT, padx=(5, 20))
+        )
+        source_combo.pack(side=tk.LEFT, padx=(5, 20))
 
-        ttk.Label(frame, text="Target Language:").pack(side=tk.LEFT)
+        target_label = ttk.Label(language_frame, text="Target Language:")
+        target_label.pack(side=tk.LEFT)
 
-        ttk.Combobox(
-            frame,
+        target_combo = ttk.Combobox(
+            language_frame,
             textvariable=self.target_language_var,
             values=["English", "Korean", "Japanese"],
             state="readonly",
             width=15,
-        ).pack(side=tk.LEFT, padx=5)
+        )
+        target_combo.pack(side=tk.LEFT, padx=5)
 
     def _create_result_table(self) -> None:
-        frame = ttk.LabelFrame(self.root, text="Translation Result", padding=10)
-        frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        table_frame = ttk.LabelFrame(self.root, text="Translation Result", padding=10)
+        table_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
         columns = ("id", "line", "original", "translated")
-        self.result_table = ttk.Treeview(frame, columns=columns, show="headings", height=12)
+        self.result_table = ttk.Treeview(
+            table_frame,
+            columns=columns,
+            show="headings",
+            height=12,
+        )
 
         self.result_table.heading("id", text="ID")
         self.result_table.heading("line", text="Line")
@@ -116,8 +157,17 @@ class RenPyTranslatorApp:
         self.result_table.column("original", width=470)
         self.result_table.column("translated", width=470)
 
-        y_scrollbar = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=self.result_table.yview)
-        x_scrollbar = ttk.Scrollbar(frame, orient=tk.HORIZONTAL, command=self.result_table.xview)
+        y_scrollbar = ttk.Scrollbar(
+            table_frame,
+            orient=tk.VERTICAL,
+            command=self.result_table.yview,
+        )
+
+        x_scrollbar = ttk.Scrollbar(
+            table_frame,
+            orient=tk.HORIZONTAL,
+            command=self.result_table.xview,
+        )
 
         self.result_table.configure(
             yscrollcommand=y_scrollbar.set,
@@ -128,8 +178,8 @@ class RenPyTranslatorApp:
         y_scrollbar.grid(row=0, column=1, sticky="ns")
         x_scrollbar.grid(row=1, column=0, sticky="ew")
 
-        frame.rowconfigure(0, weight=1)
-        frame.columnconfigure(0, weight=1)
+        table_frame.rowconfigure(0, weight=1)
+        table_frame.columnconfigure(0, weight=1)
 
         self.result_table.bind("<<TreeviewSelect>>", self.on_entry_selected)
 
@@ -143,37 +193,51 @@ class RenPyTranslatorApp:
         original_frame = ttk.LabelFrame(text_area_frame, text="Original Text", padding=5)
         original_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
 
-        self.original_text_box = tk.Text(original_frame, height=5, wrap=tk.WORD, state=tk.DISABLED)
+        self.original_text_box = tk.Text(
+            original_frame,
+            height=5,
+            wrap=tk.WORD,
+            state=tk.DISABLED,
+        )
         self.original_text_box.pack(fill=tk.BOTH, expand=True)
 
         translated_frame = ttk.LabelFrame(text_area_frame, text="Translated Text", padding=5)
         translated_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
 
-        self.translated_text_box = tk.Text(translated_frame, height=5, wrap=tk.WORD)
+        self.translated_text_box = tk.Text(
+            translated_frame,
+            height=5,
+            wrap=tk.WORD,
+        )
         self.translated_text_box.pack(fill=tk.BOTH, expand=True)
 
-        ttk.Button(
+        save_button = ttk.Button(
             editor_frame,
             text="Save Edited Translation",
             command=self.save_edited_translation,
-        ).pack(anchor=tk.E, pady=(8, 0))
+        )
+        save_button.pack(anchor=tk.E, pady=(8, 0))
 
     def _create_status_bar(self) -> None:
-        frame = ttk.Frame(self.root)
-        frame.pack(fill=tk.X, side=tk.BOTTOM)
+        status_frame = ttk.Frame(self.root)
+        status_frame.pack(fill=tk.X, side=tk.BOTTOM)
 
-        ttk.Label(
-            frame,
+        status_label = ttk.Label(
+            status_frame,
             textvariable=self.status_var,
             anchor=tk.W,
             relief=tk.SUNKEN,
             padding=5,
-        ).pack(fill=tk.X)
+        )
+        status_label.pack(fill=tk.X)
 
     def select_file(self) -> None:
         file_path = filedialog.askopenfilename(
             title="Select Ren'Py script file",
-            filetypes=[("Ren'Py Script", "*.rpy"), ("All Files", "*.*")],
+            filetypes=[
+                ("Ren'Py Script", "*.rpy"),
+                ("All Files", "*.*"),
+            ],
         )
 
         if not file_path:
@@ -201,8 +265,14 @@ class RenPyTranslatorApp:
             self._refresh_table()
             self._clear_editor()
 
-            self.status_var.set(f"Analysis completed. Extracted {len(self.entries)} text entries.")
-            messagebox.showinfo("Analysis Complete", f"Extracted {len(self.entries)} text entries.")
+            self.status_var.set(
+                f"Analysis completed. Extracted {len(self.entries)} text entries."
+            )
+
+            messagebox.showinfo(
+                "Analysis Complete",
+                f"Extracted {len(self.entries)} text entries.",
+            )
 
         except Exception as error:
             messagebox.showerror("Analysis Error", str(error))
@@ -308,12 +378,15 @@ class RenPyTranslatorApp:
         self._refresh_table()
         self._show_entry_in_editor(self.selected_entry)
 
-        self.status_var.set(f"Edited translation saved for entry #{self.selected_entry.entry_id}.")
+        self.status_var.set(
+            f"Edited translation saved for entry #{self.selected_entry.entry_id}."
+        )
 
     def _find_entry_by_id(self, entry_id: int) -> Optional[TranslationEntry]:
         for entry in self.entries:
             if entry.entry_id == entry_id:
                 return entry
+
         return None
 
     def _show_entry_in_editor(self, entry: TranslationEntry) -> None:
@@ -329,6 +402,7 @@ class RenPyTranslatorApp:
         self.original_text_box.configure(state=tk.NORMAL)
         self.original_text_box.delete("1.0", tk.END)
         self.original_text_box.configure(state=tk.DISABLED)
+
         self.translated_text_box.delete("1.0", tk.END)
 
     def _clear_table(self) -> None:
